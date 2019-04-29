@@ -43,7 +43,7 @@ def crop_resize_and_save(filename, output_dir, bbox, size=SIZE):
 
 if __name__ == '__main__':
     # Define the data directories
-    project_dir = '~/Documents/Senior/CS230/Project/stanford-cars/'
+    project_dir = '~/Documents/Senior/CS230/CS-230-project/stanford-cars/'
     data_dir = 'stanford-cars/'
     output_dir = 'stanford-cars/car_ims_227/'
     
