@@ -34,7 +34,7 @@ def crop_and_resize(filename, bbox, size=SIZE):
     new_box = (x1, y1, x2, y2)
     image = image.crop(box = new_box)
     image = image.resize((size, size), Image.BILINEAR)
-    return np.asarray(image)
+    return np.array(image)
 
 # Define the data directories
 project_dir = '~/Documents/Senior/CS230/CS-230-project/stanford-cars/'
@@ -60,6 +60,7 @@ filenames = {'train': train_filenames,'dev': dev_filenames,'test': test_filename
 for split in ['train', 'dev', 'test']:
     X = []
     Y = []
+    i = 0
     for filename in tqdm(filenames[split]):
         full_path = os.path.join(data_dir, filename)
         row = annotations.loc[annotations['relative_im_path']==filename]
@@ -69,12 +70,17 @@ for split in ['train', 'dev', 'test']:
         y2 = int(row['bbox_y2'])
         box = (x1, y1, x2, y2)
         image = crop_and_resize(full_path, box, size=SIZE)
+        if image.shape != (SIZE, SIZE, 3):
+        	continue
         label = int(row['class'])
-        X.append(image.flatten())
+        X.append(image)
         Y.append(label)
-    X_filename = data_dir + 'X_' + split
-    Y_filename = data_dir + 'Y_' + split
+    X_filename = data_dir + 'X_' + split + '_' + str(SIZE)
+    Y_filename = data_dir + 'Y_' + split + '_' + str(SIZE)
     np.save(X_filename, X)
     np.save(Y_filename, Y)
+    print(len(X))
+    print(X[0].shape)
+    print(len(Y))
 
 print("Done building dataset")
