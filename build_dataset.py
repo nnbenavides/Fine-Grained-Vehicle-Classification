@@ -1,3 +1,6 @@
+# Note: We leveraged https://github.com/cs230-stanford/cs230-code-examples/blob/master/tensorflow/vision/build_dataset.py
+# to write this script to generate our dataset.
+
 # Import required packages
 import argparse
 import random
