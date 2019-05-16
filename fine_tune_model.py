@@ -117,20 +117,30 @@ if __name__ == '__main__':
                   optimizer=sgd,
                   metrics=['accuracy'])
     print('Model compiled!')
-
+    
     # Load the data
-    data_dir = '/stanford-cars/data_224/'
-    X_train = np.load('data_224/X_train_224.npy')
-    X_train = X_train/255
-    Y_train = np.load('data_224/Y_train_224.npy')
+    Y_train = np.load('./../data_224_aug/Y_train_224.npy')
+    Y_train = list(Y_train) + list(Y_train)
+    print(len(Y_train))
     Y_train = encode(Y_train)
 
-    X_dev = np.load('data_224/X_dev_224.npy')
+    print('Loading X_train')
+    X_train = np.load('./../data_224_aug/X_train_224.npy')
+    X_train = X_train/255
+    print('Loading X_train_aug')
+    X_train_aug = np.load('./../data_224_aug/X_aug_train_224.npy')
+    X_train_aug = X_train_aug/255
+    print('Concatenating X_trains')
+    X_train = np.concatenate((X_train, X_train_aug), axis = 0)
+
+
+    X_dev = np.load('./../data_224_aug/X_dev_224.npy')
     X_dev = X_dev/255
-    Y_dev = np.load('data_224/Y_dev_224.npy')
+    Y_dev = np.load('./../data_224_aug/Y_dev_224.npy')
     Y_dev = encode(Y_dev)
 
-    print(model.summary())
+    #print(model.summary())
     history = model.fit(x=X_train, y=Y_train, batch_size=batchSize, epochs=epochs, validation_data = (X_dev, Y_dev), verbose=2)
     np.save('Model_History.npy', history.history)
     model.save('Baseline.h5')
+
