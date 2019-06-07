@@ -12,16 +12,19 @@ import keras
 from PIL import Image
 # ------------------------------------------------------------------------------
 
-def freeze_layers(model):
-    for layer in model.layers:
-        layer.trainable = False
+def freeze_layers(model, n_layers_to_freeze):
+    print(len(model.layers))
+    for i, layer in enumerate(model.layers):
+        if i < n_layers_to_freeze:
+            layer.trainable = False
+        else:
+            layer.trainable = True
 
-
-def model_define(modeltype, inputshape):
+def model_define(modeltype, inputshape, n_layers_to_freeze):
     if modeltype == 'VGG16':
         model = VGG16(include_top=False, weights=None, input_tensor=None, input_shape=inputshape, pooling=None)
-        freeze_layers(model)
-        model.load_weights('ModelWeights/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+        freeze_layers(model, n_layers_to_freeze)
+        model.load_weights('vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
         # model.load_weights('vgg16_weights_tf_dim_ordering_tf_kernels.h5')
         # model.layers[-1].kernel_initializer = initializers.glorot_normal()
         # model.layers.append(Dense(4096, activation = 'relu'))
@@ -30,12 +33,12 @@ def model_define(modeltype, inputshape):
         print('Model: VGG 16, weights loaded!')
     elif modeltype == 'InceptionV3':
         model = InceptionV3(include_top=False, weights=None,input_shape=inputShape)
-        freeze_layers(model)
+        freeze_layers(model, n_layers_to_freeze)
         model.load_weights('ModelWeights/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5')
         print('Model:InceptionV3, weights loaded!')
     elif modeltype == 'VGG19':
         model = VGG19(include_top=False, weights=None, input_tensor=None, input_shape=inputshape, pooling=None)
-        freeze_layers(model)
+        freeze_layers(model, n_layers_to_freeze)
         model.load_weights('vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5')
         print('Model: VGG 19, weights loaded!')
     else:
@@ -53,7 +56,7 @@ def fine_tune(basemodel, method):
         x = Flatten()(x)
         # x = BatchNormalization(axis=-1, epsilon=0.001, center=True, scale=True)(x)
         x = Dense(512, activation='relu')(x)
-        x = Dropout(0.2)(x)
+        x = Dropout(0.1)(x)
        # x = Dense(4096, activation='relu')(x)
         # x = Dropout(0.2)(x)
         # x = BatchNormalization(axis=-1, epsilon=0.001, center=True, scale=True)(x)
@@ -117,8 +120,8 @@ modelType = 'VGG16'
 # A valid value for 3 Dense FC layers is 0.005
 # A valid learning rate for 3fc with BN layers is 0.05
 
-batchSize = 33
-epochs = 100
+batchSize = 21
+epochs = 300
 # One valid number of epochs of 3 FC layers is 25
 # print(model.layers[16].trainable)
 # ---------------------------------------------------------------------------------------
@@ -129,7 +132,7 @@ adam = optimizers.Adam()
 # ----------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    baseModel = model_define(modelType, inputShape)
+    baseModel = model_define(modelType, inputShape, 15) # freezes everything up until the last block
     model = fine_tune(baseModel, 0)
     # THE DEFAULT VALUE 0 HERE IS CORRESPONDING TO THE VGG NETWORK
 
@@ -140,20 +143,20 @@ if __name__ == '__main__':
     
     # Load the data
     print('Loading X_train')
-    X_train = np.load('data_224_aug3/X_train_224.npy')
+    X_train = np.load('../data_224_aug3/X_train_224.npy')
     X_train = X_train/255
 
     print('Loading Y_train') 
-    Y_train = np.load('data_224_aug3/Y_train_224.npy')
+    Y_train = np.load('../data_224_aug3/Y_train_224.npy')
     print(len(Y_train))
     Y_train = encode(Y_train)
 
-    X_dev = np.load('data_224_aug3/X_dev_224.npy')
+    X_dev = np.load('../data_224_aug3/X_dev_224.npy')
     X_dev = X_dev/255
-    Y_dev = np.load('data_224_aug3/Y_dev_224.npy')
+    Y_dev = np.load('../data_224_aug3/Y_dev_224.npy')
     Y_dev = encode(Y_dev)
 
     print(model.summary())
     history = model.fit(x=X_train, y=Y_train, batch_size=batchSize, epochs=epochs, validation_data = (X_dev, Y_dev), verbose=2)
     np.save('Model_History.npy', history.history)
-    model.save('Baseline.h5')
+    model.save('new_test.h5')
