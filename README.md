@@ -6,7 +6,7 @@ This repository contains code for the final project of Stanford's CS230 (Deep Le
 
 The Stanford Cars dataset can be found [here](https://ai.stanford.edu/~jkrause/cars/car_dataset.html)
 
-### Required Packages/Software
+## Required Packages/Software
 * Python >= 3.6
 * numpy
 * Tensorflow-gpu 1.12.0
@@ -17,7 +17,7 @@ The Stanford Cars dataset can be found [here](https://ai.stanford.edu/~jkrause/c
 * tqdm
 * cv2
 
-### Running Code
+## Running Code
 Once the dataset has been downloaded, required packages have been installed, and VGG16 model weights have been loaded from [here](https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5), run python baseline_model.py or python train_vgg_model.py to train a model.
 
 ## Authors
