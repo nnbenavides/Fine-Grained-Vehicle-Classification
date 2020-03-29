@@ -4,7 +4,7 @@ This repository contains code for the final project of Stanford's CS230 (Deep Le
 
 ## Dataset
 
-The Stanford Cars dataset can be found [here](https://ai.stanford.edu/~jkrause/cars/car_dataset.html)
+The Stanford Cars dataset can be found [here](https://ai.stanford.edu/~jkrause/cars/car_dataset.html).
 
 ## Required Packages/Software
 * Python >= 3.6
